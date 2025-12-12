@@ -1,0 +1,12 @@
+# Visual Studio #
+#################
+packages
+bin
+Bin
+obj
+*.suo
+*.err
+*.user
+*.pdb
+.vs
+
