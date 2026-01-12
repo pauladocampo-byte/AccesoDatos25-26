@@ -1,0 +1,158 @@
+using Actividad7.Models;
+using Actividad7.DataAccess;
+
+namespace Actividad7.Services
+{
+    /// <summary>
+    /// Interfaz para el servicio de lógica de negocio de alumnos
+    /// </summary>
+    public interface IAlumnoService
+    {
+        List<Alumno> GetAllAlumnos();
+        (bool Success, string Message) CreateAlumno(Alumno alumno);
+        Alumno? GetAlumnoByDni(string dni);
+        (bool Success, string Message) UpdateAlumno(Alumno alumno);
+        (bool Success, string Message) DeleteAlumno(string dni);
+        bool ValidateAlumno(Alumno alumno, out string errorMessage);
+    }
+
+    /// <summary>
+    /// Servicio que contiene la lógica de negocio para los alumnos
+    /// </summary>
+    public class AlumnoService : IAlumnoService
+    {
+        private readonly IAlumnoRepository _alumnoRepository;
+
+        public AlumnoService(IAlumnoRepository alumnoRepository)
+        {
+            _alumnoRepository = alumnoRepository ?? throw new ArgumentNullException(nameof(alumnoRepository));
+        }
+
+        public List<Alumno> GetAllAlumnos()
+        {
+            return _alumnoRepository.GetAllAlumnos();
+        }
+
+        public (bool Success, string Message) CreateAlumno(Alumno alumno)
+        {
+            if (!ValidateAlumno(alumno, out string errorMessage))
+            {
+                return (false, errorMessage);
+            }
+
+            var existingAlumno = _alumnoRepository.GetAlumnoByDni(alumno.DNI);
+            if (existingAlumno != null)
+            {
+                return (false, "Ya existe un alumno con ese DNI");
+            }
+
+            bool success = _alumnoRepository.InsertAlumno(alumno);
+            return success 
+                ? (true, "Alumno creado exitosamente")
+                : (false, "Error al crear el alumno en la base de datos");
+        }
+
+        public Alumno? GetAlumnoByDni(string dni)
+        {
+            if (string.IsNullOrWhiteSpace(dni))
+                return null;
+
+            return _alumnoRepository.GetAlumnoByDni(dni);
+        }
+
+        public (bool Success, string Message) UpdateAlumno(Alumno alumno)
+        {
+            if (!ValidateAlumno(alumno, out string errorMessage))
+            {
+                return (false, errorMessage);
+            }
+
+            var existingAlumno = _alumnoRepository.GetAlumnoByDni(alumno.DNI);
+            if (existingAlumno == null)
+            {
+                return (false, "El alumno no existe");
+            }
+
+            bool success = _alumnoRepository.UpdateAlumno(alumno);
+            return success 
+                ? (true, "Alumno actualizado exitosamente")
+                : (false, "Error al actualizar el alumno");
+        }
+
+        public (bool Success, string Message) DeleteAlumno(string dni)
+        {
+            if (string.IsNullOrWhiteSpace(dni))
+            {
+                return (false, "DNI no válido");
+            }
+
+            var existingAlumno = _alumnoRepository.GetAlumnoByDni(dni);
+            if (existingAlumno == null)
+            {
+                return (false, "El alumno no existe");
+            }
+
+            try
+            {
+                bool success = _alumnoRepository.DeleteAlumno(dni);
+                return success 
+                    ? (true, "Alumno eliminado exitosamente")
+                    : (false, "Error al eliminar el alumno");
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Error de integridad referencial
+                return (false, $"?? INTEGRIDAD REFERENCIAL: {ex.Message}");
+            }
+        }
+
+        public bool ValidateAlumno(Alumno alumno, out string errorMessage)
+        {
+            errorMessage = string.Empty;
+
+            if (alumno == null)
+            {
+                errorMessage = "El alumno no puede ser nulo";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(alumno.DNI))
+            {
+                errorMessage = "El DNI es obligatorio";
+                return false;
+            }
+
+            if (alumno.DNI.Length != 9)
+            {
+                errorMessage = "El DNI debe tener exactamente 9 caracteres";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(alumno.Nombre))
+            {
+                errorMessage = "El nombre es obligatorio";
+                return false;
+            }
+
+            if (alumno.Nombre.Length > 50)
+            {
+                errorMessage = "El nombre no puede exceder 50 caracteres";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(alumno.Apellidos))
+            {
+                errorMessage = "Los apellidos son obligatorios";
+                return false;
+            }
+
+            if (alumno.Apellidos.Length > 50)
+            {
+                errorMessage = "Los apellidos no pueden exceder 50 caracteres";
+                return false;
+            }
+
+            return true;
+        }
+    }
+}
