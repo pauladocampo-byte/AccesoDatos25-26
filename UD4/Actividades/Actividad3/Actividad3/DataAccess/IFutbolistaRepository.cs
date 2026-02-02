@@ -19,5 +19,13 @@ namespace Actividad3.DataAccess
         /// Obtiene todos los futbolistas de un equipo por nombre del equipo.
         /// </summary>
         IEnumerable<Futbolista> GetByEquipoNombre(string nombreEquipo);
+
+        int Insert(Futbolista futbolista);
+
+        Futbolista GetByCodigo(string codigo);
+
+        int Delete(string codigo);
+
+        int Update(Futbolista futbolista);
     }
 }

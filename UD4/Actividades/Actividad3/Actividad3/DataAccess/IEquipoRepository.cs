@@ -10,5 +10,13 @@ namespace Actividad3.DataAccess
     public  interface IEquipoRepository
     {
         IEnumerable<Equipo> GetAll();
+
+        int Insert(Equipo equipo);
+
+        Equipo? GetEquipoByCodigo(string codigo);
+
+        int Delete(string codigo);
+
+        int Update(Equipo equipo);
     }
 }
