@@ -1,6 +1,7 @@
 using Actividad4;
 using Actividad4.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WinFormsApp1
@@ -28,7 +29,14 @@ namespace WinFormsApp1
         {
             var services = new ServiceCollection();
 
-            services.AddDbContext<PanaderiaContext>(options => options.UseSqlServer("Server=PO235PDOCAMPO\\SQLEXPRESS;Database=PanaderiaDB;Trusted_Connection=True;TrustServerCertificate=True;"));
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<PanaderiaContext>(options => options.UseSqlServer(connectionString));
 
             services.AddTransient<Form1>();
 
