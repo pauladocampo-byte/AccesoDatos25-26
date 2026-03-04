@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 
+    OPCIÓN 1: Referencia al proyecto (para desarrollo)
+    Usa esta opción si quieres trabajar directamente con el código fuente del ClienteApi
+    -->
+    <ProjectReference Include="..\..\ClienteApi\Actividad6.ClienteApi\Actividad6.ClienteApi.csproj" />
+    
+    <!-- 
+    OPCIÓN 2: Referencia al paquete NuGet (para producción)
+    Comenta la línea anterior y descomenta esta si quieres usar el paquete NuGet.
+    Asegúrate de que el paquete está generado y disponible en el feed local (ver nuget.config)
+    -->
+    <!-- <PackageReference Include="Actividad6.ClienteApi" Version="1.0.0" /> -->
+  </ItemGroup>
+
+</Project>

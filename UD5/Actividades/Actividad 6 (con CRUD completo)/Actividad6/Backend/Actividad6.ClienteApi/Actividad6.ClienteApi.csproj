@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    
+    <!-- Configuración para generar paquete NuGet -->
+    <PackageId>Actividad6.ClienteApi</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>TuNombre</Authors>
+    <Company>Instituto</Company>
+    <Description>Cliente HTTP para consumir la API de Panadería</Description>
+    <PackageTags>panaderia;api;client;http</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
